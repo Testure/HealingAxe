@@ -1,0 +1,16 @@
+[
+{
+  "modid": "healingaxe",
+  "name": "Healing Axe",
+  "description": "Adds a highly configurable 'Healing Axe' that has infinite durability and restores hunger while held.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Turing6"],
+  "credits": "",
+  "logoFile": "icon.png",
+  "screenshots": [],
+  "dependencies": ["configurator"]
+}
+]
