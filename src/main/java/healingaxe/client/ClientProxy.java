@@ -13,6 +13,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.Objects;
 
 public class ClientProxy extends CommonProxy {
+    private int color0 = -1;
+    private int color1 = -1;
+
     public ClientProxy() {
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -25,20 +28,42 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, i) -> {
-            if (i == 0) {
-                String col = HealingAxe.axeHandleColor.get();
-                if (col != null && !col.isEmpty()) {
-                    return Integer.parseUnsignedInt(col.substring(2), 16);
-                }
-            }
-            if (i == 1) {
-                String col = HealingAxe.axeColor.get();
-                if (col != null && !col.isEmpty()) {
-                    return Integer.parseUnsignedInt(col.substring(2), 16);
-                }
-            }
+            if (i == 0)
+                return getColor0();
+            if (i == 1)
+                return getColor1();
             return -1;
         }, HealingAxe.ITEM);
+    }
+
+    private int getColor0() {
+        if (color0 == -1) {
+            String col = HealingAxe.axeHandleColor.get();
+            if (col != null && !col.isEmpty()) {
+                try {
+                    color0 = Integer.parseUnsignedInt(col.substring(2), 16);
+                } catch (Exception e) {
+                    HealingAxe.LOGGER.error("Error getting axe layer0 color!", e);
+                    color0 = 0;
+                }
+            }
+        }
+        return color0;
+    }
+
+    private int getColor1() {
+        if (color1 == -1) {
+            String col = HealingAxe.axeColor.get();
+            if (col != null && !col.isEmpty()) {
+                try {
+                    color1 = Integer.parseUnsignedInt(col.substring(2), 16);
+                } catch (Exception e) {
+                    HealingAxe.LOGGER.error("Error getting axe layer1 color!", e);
+                    color1 = 0;
+                }
+            }
+        }
+        return color1;
     }
 
     @SubscribeEvent

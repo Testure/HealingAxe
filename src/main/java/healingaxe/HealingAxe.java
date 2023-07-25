@@ -7,16 +7,20 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = HealingAxe.MODID, dependencies = "required:configurator@[1.2.5,);")
 public class HealingAxe {
     public static final String MODID = "healingaxe";
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static HealingAxeItem ITEM;
 
     @SidedProxy(serverSide = "healingaxe.CommonProxy", clientSide = "healingaxe.client.ClientProxy")
@@ -33,6 +37,7 @@ public class HealingAxe {
     public static final FloatConfigValue saturationAmount;
     public static final EnumConfigValue<EnumRarity> axeRarity;
     private static final Config COMMON_CONFIG;
+    private static final Config CLIENT_CONFIG;
 
     static {
         Config.Builder builderClient = Config.Builder.builder().withName("HealingAxe-Client").ofType(Config.Type.CLIENT);
@@ -54,7 +59,7 @@ public class HealingAxe {
         axeRarity = builderCommon.defineEnum("item_rarity", EnumRarity.COMMON, EnumRarity::valueOf);
         builderCommon.pop();
 
-        Configurator.registerConfig(builderClient.build());
+        CLIENT_CONFIG = Configurator.registerConfig(builderClient.build());
         COMMON_CONFIG = Configurator.registerConfig(builderCommon.build());
     }
 
@@ -65,6 +70,7 @@ public class HealingAxe {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit();
+        if (FMLCommonHandler.instance().getSide().isClient()) Configurator.loadConfig(CLIENT_CONFIG);
     }
 
     @Mod.EventHandler
